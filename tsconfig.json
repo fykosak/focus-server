@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "module": "commonjs",
+    "target": "es6",
+    "jsx": "react",
+    "baseUrl": ".",
+    "paths": {
+      "@app/*": [
+        "app/*"
+      ]
+    }
+  },
+  "include": [
+    "./app/**/*"
+  ]
+}
