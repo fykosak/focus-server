@@ -1,7 +1,7 @@
 import AbstractFactory, { ANSWER_PENDING } from './AbstractFactory';
 import { FocusFormData } from '../interface';
 
-class ImageFactory extends AbstractFactory {
+export default class ImageFactory extends AbstractFactory {
 
     constructor(file: string, names: string[]) {
         super(file, names);

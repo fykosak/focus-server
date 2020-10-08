@@ -3,7 +3,7 @@ import IStatement from '../validation/IStatement';
 import AbstractFactory, { ANSWER_CORRECT, ANSWER_INCORRECT } from './AbstractFactory';
 import { FocusFormData } from '../interface';
 
-class DefaultFactory extends AbstractFactory {
+export default class DefaultFactory extends AbstractFactory {
 
     private answerStatement: IStatement;
 

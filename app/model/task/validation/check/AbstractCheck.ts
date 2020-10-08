@@ -1,18 +1,17 @@
 import IStatement from '../IStatement';
-import IAccessor from '../accessor/IAccessor';
 import { FocusFormData } from '../../interface';
 
-export default abstract class AbstractCheck<T> implements IStatement {
+export default abstract class AbstractCheck<VALUE_TYPE> implements IStatement<boolean> {
 
-    private readonly accessor: IAccessor<T>;
+    private readonly accessor: IStatement<VALUE_TYPE>;
 
-    protected constructor(accessor: IAccessor<T>) {
+    protected constructor(accessor: IStatement<VALUE_TYPE>) {
         this.accessor = accessor;
     }
 
-    protected getValue(formData: FocusFormData): T {
+    protected getValue(formData: FocusFormData): VALUE_TYPE {
         return this.accessor.invoke(formData);
     }
 
-    abstract evaluate(formData: FocusFormData): boolean;
+    abstract invoke(formData: FocusFormData): boolean;
 }

@@ -1,17 +1,17 @@
 import AbstractCheck from './AbstractCheck';
-import IAccessor from '../accessor/IAccessor';
 import { FocusFormData } from '../../interface';
+import IStatement from '@app/model/task/validation/IStatement';
 
 export default class IntCheck extends AbstractCheck<number> {
 
     private readonly correct: number;
 
-    public constructor(correct: number, accessor: IAccessor) {
+    public constructor(correct: number, accessor: IStatement<number>) {
         super(accessor);
         this.correct = correct;
     }
 
-    public evaluate(formData: FocusFormData): boolean {
+    public invoke(formData: FocusFormData): boolean {
         const value = this.getValue(formData);
         return +value === this.correct;
     }

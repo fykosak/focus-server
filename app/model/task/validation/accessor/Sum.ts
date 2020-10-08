@@ -1,15 +1,10 @@
-import IAccessor from './IAccessor';
 import { FocusFormData } from '../../interface';
+import VariadicStatement from '@app/model/task/validation/VariadicStatement';
 
-export default class Sum implements IAccessor<number> {
-    private readonly args: IAccessor<number>[];
-
-    constructor(...args: IAccessor[]) {
-        this.args = args;
-    }
+export default class Sum extends VariadicStatement<number, number> {
 
     public invoke(formData: FocusFormData): number {
-        return this.args.reduce((sum, arg) => {
+        return this.arguments.reduce((sum, arg) => {
             return sum + arg.invoke(formData);
         }, 0);
     }

@@ -1,17 +1,17 @@
 import IStatement from '../IStatement';
 import { FocusFormData } from '../../interface';
 
-class LogicalXOr implements IStatement {
+export default class LogicalXOr implements IStatement<boolean> {
 
-    private a: IStatement;
-    private b: IStatement;
+    private a: IStatement<boolean>;
+    private b: IStatement<boolean>;
 
-    constructor(a: IStatement, b: IStatement) {
+    constructor(a: IStatement<boolean>, b: IStatement<boolean>) {
         this.a = a;
         this.b = b;
     }
 
-    public evaluate(formData: FocusFormData): boolean {
-        return this.a.evaluate(formData) !== this.b.evaluate(formData);
+    public invoke(formData: FocusFormData): boolean {
+        return this.a.invoke(formData) !== this.b.invoke(formData);
     }
 }

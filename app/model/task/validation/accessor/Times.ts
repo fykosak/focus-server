@@ -1,11 +1,11 @@
-import IAccessor from './IAccessor';
 import { FocusFormData } from '../../interface';
+import IStatement from '@app/model/task/validation/IStatement';
 
-export default class Times implements IAccessor<number> {
-    private readonly a: IAccessor<number>;
-    private readonly b: IAccessor<number>;
+export default class Times implements IStatement<number> {
+    private readonly a: IStatement<number>;
+    private readonly b: IStatement<number>;
 
-    constructor(a: IAccessor, b: IAccessor) {
+    constructor(a: IStatement<number>, b: IStatement<number>) {
         this.a = a;
         this.b = b;
     }
