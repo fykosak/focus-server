@@ -1,5 +1,3 @@
-import AbstractFactory from '@app/model/task/factory/AbstractFactory';
-import DefaultFactory from '@app/model/task/factory/DefaultFactory';
 import LogicalAnd from '@app/model/task/validation/logicial/LogicalAnd';
 import LogicalOr from '@app/model/task/validation/logicial/LogicalOr';
 import LogicalXOr from '@app/model/task/validation/logicial/LogicalXOr';
@@ -9,39 +7,52 @@ import Times from '@app/model/task/validation/accessor/Times';
 import StringCheck from '@app/model/task/validation/check/StringCheck';
 import IntCheck from '@app/model/task/validation/check/IntCheck';
 import RealCheck from '@app/model/task/validation/check/RealCheck';
+import ExpressionNode from "@app/model/task/validation/ExpressionNode";
 
-class TaskDispatchFactory {
+interface expressionNodeClass {
+    new(data: any, answerExpresionTreeFactory: AnswerExpresionTreeFactory): ExpressionNode;
+}
 
-    private factories: { [key: number]: AbstractFactory } = {};
+class AnswerExpresionTreeFactory {
+    private readonly expressionNodes: { [key: string]: expressionNodeClass };
 
-    public getFactory(taskId: number): AbstractFactory {
-        if (!this.factories.hasOwnProperty(taskId)) {
-            this.factories[taskId] = this.createFactory(taskId);
-        }
-        return this.factories[taskId];
+    public constructor(expressionNodes: typeof AnswerExpresionTreeFactory.prototype.expressionNodes) {
+        this.expressionNodes = expressionNodes;
     }
-    private createFactory(taskId: number): AbstractFactory {
-        return new DefaultFactory('', [], []);
-    }
-/*
-    private compileEntity(statement: any): any {
-        if (typeof statement === 'object') {
-            for (const factory in statement) {
-                if (statement.hasOwnProperty(factory)) {
-                    const args = statement[factory];
-                    if (statementMap.hasOwnProperty(factory)) {
-                        return new statementMap[factory](...args);
-                    }
-                }
 
+    /**
+     * Creates an expression tree from data object
+     * @param data object describes the expression tree to be created
+     */
+    public createTree(data: any): ExpressionNode {
+        let key: string = null;
+        let innerData: any = null;
+
+        if (typeof data === 'object') {
+            let keys = Object.keys(data);
+            if (keys.length !== 1) {
+                // Error unexpected number of keys
+                return null;
             }
+
+            key = keys[0];
+            innerData = data[key];
+        } else {
+            // Trick to avoid unnecessary large describing objects
+            key = 'constant';
+            innerData = data;
         }
-        return statement;
+
+        if (!this.expressionNodes.hasOwnProperty(key)) {
+            // Error unknown expression handler
+            return null;
+        }
+
+        let node = new this.expressionNodes[key](innerData, this);
+        node.constructTree();
+
+        return node;
     }
-
-    private compileArgs(args: any): any {
-
-    }*/
 }
 
 const statementMap = {
@@ -58,27 +69,4 @@ const statementMap = {
     real: RealCheck,
 };
 
-type AnswerStatement = {
-    [key in keyof typeof statementMap]: AnswerStatement[] | { [key: string]: AnswerStatement }
-} | string | number | boolean
-
-type StringCheck = {
-    correct: string;
-    value: AnswerStatement;
-}
-
-type IntCheck = {
-    correct: number;
-    value: AnswerStatement;
-}
-
-type RealCheck = {
-    correct: number;
-    tolerance: [number, number];
-    value: AnswerStatement;
-}
-
-
-export const taskDispatchFactory = new TaskDispatchFactory();
-
-
+export const taskDispatchFactory = new AnswerExpresionTreeFactory(statementMap);
