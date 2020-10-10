@@ -1,18 +1,22 @@
 const {TsConfigPathsPlugin} = require('awesome-typescript-loader');
 
 module.exports = {
-    devtool: "source-map",
-    entry: "./app/index.ts",
+    devtool: 'source-map',
+    entry: './app/index.ts',
+    target: 'node',
+
     output: {
-        filename: "bundle.min.js",
-        path: __dirname + "/dist"
+        filename: 'bundle.min.js',
+        path: __dirname + '/dist'
     },
+
     resolve: {
-        extensions: [".ts", ".js"],
+        extensions: ['.ts', '.js'],
         plugins: [
             new TsConfigPathsPlugin(/* { configFileName, compiler } */)
-        ]
+        ],
     },
+
     module: {
         rules: [
             {
@@ -23,5 +27,4 @@ module.exports = {
             }
         ]
     },
-    target: 'node'
 };
