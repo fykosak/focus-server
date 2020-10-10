@@ -1,31 +1,31 @@
-import OperationManager from "@app/model/expression/OperationManager";
 import OperationOverload from "@app/model/expression/OperationOverload";
-import {IntegerType, RealType, StringType} from "@app/model/expression/definitions/default/types";
-import Operation from "@app/model/expression/Operation";
+import {BooleanType, IntegerType, RealType, StringType} from "@app/model/expression/definitions/default/types";
+import {
+    AssociativeOperation,
+    NonCommutativeBinaryOperation,
+    NonCommutativeStrictlyBinaryOperation
+} from "@app/model/expression/definitions/default/operation-templates";
 
-export class SumOperation implements Operation {
-    public transformData(data: any, operationManager: OperationManager) {
-        if (!Array.isArray(data)) return null; // Weird signature of sum operation, array expected
-        return data.map(item => operationManager.constructTree(item));
-    }
-}
+// Sum of numbers, strings, arrays, matrices
+export class SumOperation extends AssociativeOperation { private _staticTypeCheck !: 'SUM_OPERATION__TYPE_CHECK' }
 
-export class DiffOperation implements Operation {
-    public transformData(data: any, operationManager: OperationManager) {
-        if (!Array.isArray(data)) return null; // Weird signature of sum operation, array expected
-        if (!(data.length == 1 || data.length == 2)) return null; // Weird signature of sum operation, array expected
-        return data.map(item => operationManager.constructTree(item));
-    }
-}
+// Difference of numbers, arrays, matrices
+export class DiffOperation extends NonCommutativeBinaryOperation { private _staticTypeCheck !: 'DIFF_OPERATION__TYPE_CHECK' }
 
-export class MulOperation implements Operation {
-    public transformData(data: any, operationManager: OperationManager) {
-        if (!Array.isArray(data)) return null; // Weird signature of sum operation, array expected
-        return data.map(item => operationManager.constructTree(item));
-    }
-}
+// Multiplication of numbers, arrays, matrices, scalars and arrays
+export class MulOperation extends AssociativeOperation { private _staticTypeCheck !: 'MUL_OPERATION__TYPE_CHECK' }
 
-/**********************************************************************************************************************/
+// Normal number division
+export class DivOperation extends NonCommutativeBinaryOperation { private _staticTypeCheck !: 'DIV_OPERATION__TYPE_CHECK' }
+
+// Integer number division
+export class ModOperation extends NonCommutativeStrictlyBinaryOperation { private _staticTypeCheck !: 'MOD_OPERATION__TYPE_CHECK' }
+
+// Binary AND
+export class AndOperation extends AssociativeOperation { private _staticTypeCheck !: 'AND_OPERATION__TYPE_CHECK' }
+
+// Binary OR
+export class OrOperation extends AssociativeOperation { private _staticTypeCheck !: 'OR_OPERATION__TYPE_CHECK' }
 
 export class IntegerSumOperation extends OperationOverload<SumOperation> {
     public isSuitable() {
@@ -65,8 +65,6 @@ export class StringSumOperation extends OperationOverload<SumOperation> {
     }
 }
 
-/**********************************************************************************************************************/
-
 export class IntegerDiffOperation extends OperationOverload<DiffOperation> {
     public isSuitable() {
         return this.data.every(item => item.getType() instanceof IntegerType);
@@ -95,8 +93,6 @@ export class RealDiffOperation extends IntegerDiffOperation {
     }
 }
 
-/**********************************************************************************************************************/
-
 export class IntegerMulOperation extends OperationOverload<MulOperation> {
     public isSuitable() {
         return this.data.every(item => item.getType() instanceof IntegerType);
@@ -118,5 +114,95 @@ export class RealMulOperation extends IntegerMulOperation {
 
     public getType() {
         return new RealType();
+    }
+}
+
+export class IntegerDivOperation extends OperationOverload<DivOperation> {
+    public isSuitable() {
+        return this.data.every(item => item.getType() instanceof IntegerType);
+    }
+
+    public getType() {
+        return new IntegerType();
+    }
+
+    public invoke(formData: any) {
+        if (this.data.length == 1) {
+            return Math.floor(1/this.data[0].invoke(formData));
+        } else {
+            return Math.floor(this.data[0].invoke(formData)/this.data[1].invoke(formData));
+        }
+    }
+}
+
+export class RealDivOperation extends OperationOverload<DivOperation> {
+    public isSuitable() {
+        return this.data.every(item => item.getType() instanceof RealType);
+    }
+
+    public getType() {
+        return new RealType();
+    }
+
+    public invoke(formData: any) {
+        if (this.data.length == 1) {
+            return 1/this.data[0].invoke(formData);
+        } else {
+            return this.data[0].invoke(formData)/this.data[1].invoke(formData);
+        }
+    }
+}
+
+export class IntegerModOperation extends OperationOverload<ModOperation> {
+    public isSuitable() {
+        return this.data.every(item => item.getType() instanceof IntegerType);
+    }
+
+    public getType() {
+        return new IntegerType();
+    }
+
+    public invoke(formData: any) {
+        return this.data[0].invoke(formData) % this.data[1].invoke(formData);
+    }
+}
+
+/**
+ * Returns true if there is no false. (Empty conjunction is considered to be true)
+ */
+export class BooleanAndOperation extends OperationOverload<AndOperation> {
+    public isSuitable() {
+        return this.data.every(item => item.getType() instanceof BooleanType);
+    }
+
+    public getType() {
+        return new BooleanType();
+    }
+
+    public invoke(formData: any) {
+        for (let statement of this.data) {
+            if (!statement.invoke(formData)) return false;
+        }
+        return true;
+    }
+}
+
+/**
+ * Returns true if there is at least one true. (Empty disjunction is considered to be false)
+ */
+export class BooleanOrOperation extends OperationOverload<OrOperation> {
+    public isSuitable() {
+        return this.data.every(item => item.getType() instanceof BooleanType);
+    }
+
+    public getType() {
+        return new BooleanType();
+    }
+
+    public invoke(formData: any) {
+        for (let statement of this.data) {
+            if (statement.invoke(formData)) return true;
+        }
+        return false;
     }
 }

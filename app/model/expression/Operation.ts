@@ -2,6 +2,8 @@ import OperationManager from "@app/model/expression/OperationManager";
 
 /**
  * Represents an operation with defined signature
+ *
+ * Define private _staticTypeCheck !: 'identifier' to statically distinguish different operations
  */
 export default interface Operation {
     /**

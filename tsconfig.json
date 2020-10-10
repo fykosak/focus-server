@@ -2,6 +2,7 @@
   "compilerOptions": {
     "noImplicitAny": false,
     "module": "commonjs",
+    "strict": true,
     "target": "es6",
     "jsx": "react",
     "baseUrl": ".",

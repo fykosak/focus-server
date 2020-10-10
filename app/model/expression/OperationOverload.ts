@@ -11,6 +11,12 @@ export default abstract class OperationOverload<OverloadedOperation extends Oper
      */
     protected data: NonNullable<ReturnType<OverloadedOperation['transformData']>>;
 
+    /**
+     * Typescript helper filed for static type checking.
+     * This field changes class signature so that different specializations can be distinguished from each other.
+     */
+    private _genericType !: OverloadedOperation;
+
     public constructor(data: NonNullable<ReturnType<OverloadedOperation['transformData']>>) {
         this.data = data;
     }

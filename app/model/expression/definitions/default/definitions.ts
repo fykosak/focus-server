@@ -1,6 +1,7 @@
 import {
-    DiffOperation, IntegerDiffOperation, IntegerMulOperation,
-    IntegerSumOperation, MulOperation, RealDiffOperation, RealMulOperation,
+    AndOperation, BooleanAndOperation, BooleanOrOperation,
+    DiffOperation, DivOperation, IntegerDiffOperation, IntegerDivOperation, IntegerModOperation, IntegerMulOperation,
+    IntegerSumOperation, ModOperation, MulOperation, OrOperation, RealDiffOperation, RealDivOperation, RealMulOperation,
     RealSumOperation, StringSumOperation, SumOperation
 } from "@app/model/expression/definitions/default/arithmetics";
 import OperationManager from "@app/model/expression/OperationManager";
@@ -36,6 +37,19 @@ let DefaultDefinitions =  ((operationManager: OperationManager) => {
     operationManager.registerOperation('mul', MulOperation)
         .registerOverload(IntegerMulOperation)
         .registerOverload(RealMulOperation);
+
+    operationManager.registerOperation('div', DivOperation)
+        .registerOverload(IntegerDivOperation)
+        .registerOverload(RealDivOperation);
+
+    operationManager.registerOperation('mod', ModOperation)
+        .registerOverload(IntegerModOperation);
+
+    operationManager.registerOperation('and', AndOperation)
+        .registerOverload(BooleanAndOperation);
+
+    operationManager.registerOperation('or', OrOperation)
+        .registerOverload(BooleanOrOperation);
 
 }) as OperationDefinitions;
 
