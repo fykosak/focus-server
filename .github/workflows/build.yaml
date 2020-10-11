@@ -6,7 +6,7 @@ jobs:
     runs-on: ubuntu-18.04 # do not use ubuntu-latest to avoid sudden problems when new version become stable
     strategy:
       matrix:
-        node: [ '10', '12', '14' ]
+        node: [ '12', '14' ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -16,6 +16,15 @@ jobs:
       - run: npm run build
   test:
     needs: build
-    name: Test under Node ${{ needs.build.matrix.node }}
-    steps:
-      - run: npm run test
+    name: Test under Node ${{ matrix.node }}
+    runs-on: ubuntu-18.04 # do not use ubuntu-latest to avoid sudden problems when new version become stable
+      strategy:
+        matrix:
+          node: [ '12', '14' ]
+      steps:
+        - uses: actions/checkout@v2
+        - uses: actions/setup-node@v1
+          with:
+            node-version: ${{ matrix.node }}
+        - run: npm install
+        - run: npm run test
