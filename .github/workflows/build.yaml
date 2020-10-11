@@ -2,11 +2,11 @@ name: Build
 on: [ push, pull_request ]
 jobs:
   build:
-    name: Build under Node ${{ matrix.node }}
+    name: Build and test under Node ${{ matrix.node }}
     runs-on: ubuntu-18.04 # do not use ubuntu-latest to avoid sudden problems when new version become stable
     strategy:
       matrix:
-        node: [ '12', '14' ]
+        node: [ '10', '12', '14' ]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -14,17 +14,6 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install
       - run: npm run build
-  test:
-    needs: build
-    name: Test under Node ${{ matrix.node }}
-    runs-on: ubuntu-18.04 # do not use ubuntu-latest to avoid sudden problems when new version become stable
-    strategy:
-      matrix:
-        node: [ '12', '14' ]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node }}
-      - run: npm install
+        name: Build project
       - run: npm run test
+        name: Test project under Mocha
