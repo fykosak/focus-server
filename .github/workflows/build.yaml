@@ -2,7 +2,7 @@ name: Build
 on: [ push, pull_request ]
 jobs:
   build:
-    name: Node ${{ matrix.node }}
+    name: Build under Node ${{ matrix.node }}
     runs-on: ubuntu-18.04 # do not use ubuntu-latest to avoid sudden problems when new version become stable
     strategy:
       matrix:
@@ -14,3 +14,8 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: npm install
       - run: npm run build
+  test:
+    needs: build
+    name: Test under Node ${{ needs.build.matrix.node }}
+    steps:
+      - run: npm run test

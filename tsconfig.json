@@ -10,7 +10,8 @@
       "@app/*": [
         "app/*"
       ]
-    }
+    },
+    "types": ["mocha", "node"]
   },
   "include": [
     "./app/**/*"
