@@ -5,7 +5,7 @@ import OperationManager from "@app/model/expression/OperationManager";
  *
  * Define private _staticTypeCheck !: 'identifier' to statically distinguish different operations
  */
-export default interface Operation {
+export default abstract class Operation {
     /**
      * This function checks if data have correct signature and creates the same object but the parameters for this
      * operation were replaced with statements constructed from replaced data
@@ -13,5 +13,10 @@ export default interface Operation {
      * @param operationManager used for constructing expression from parameters
      * @throws ExpressionError
      */
-    transformData(data: any, operationManager: OperationManager): any;
+    public abstract transformData(data: any, operationManager: OperationManager): any;
+
+    /**
+     * www
+     */
+    protected abstract _staticTypeCheck : string;
 }

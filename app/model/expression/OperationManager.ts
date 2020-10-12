@@ -1,7 +1,10 @@
 import IRegisteredOperation from "@app/model/expression/IRegisteredOperation";
 import RegisteredOperation from "@app/model/expression/RegisteredOperation";
 import Expression from "@app/model/expression/Expression";
-import ExpressionError from "@app/model/expression/ExpressionError";
+import {
+    InvalidExpressionDescriptionExpressionError,
+    UnknownOperationNameExpressionError
+} from "@app/model/expression/ExpressionError";
 import Operation from "@app/model/expression/Operation";
 
 /**
@@ -38,7 +41,7 @@ export default class OperationManager {
         if (typeof data === 'object') {
             let keys = Object.keys(data);
             if (keys.length !== 1) {
-                throw new ExpressionError(`Unable to parse JSON description. Expected object having 1 key with operation name but got ${keys.length}.`);
+                throw new InvalidExpressionDescriptionExpressionError(`Unable to parse JSON description. Expected object having 1 key with operation name but got ${keys.length}.`);
             }
 
             key = keys[0];
@@ -52,7 +55,7 @@ export default class OperationManager {
         let operation = this.operations.get(key);
 
         if (!operation) {
-            throw new ExpressionError(`Unknown operation ${key}.`);
+            throw new UnknownOperationNameExpressionError(`Unknown operation ${key}.`);
         } else {
             return operation.constructTreeFromInnerData(innerData);
         }

@@ -1,7 +1,10 @@
 import { expect } from 'chai';
 import OperationManager from "../../app/model/expression/OperationManager";
 import DefaultDefinitions from "../../app/model/expression/definitions/default/definitions";
-import ExpressionError from "../../app/model/expression/ExpressionError";
+import {
+    NoMatchingOverloadExpressionError,
+    UnknownOperationNameExpressionError
+} from "../../app/model/expression/ExpressionError";
 
 const sumSucceeds = {
     "sum": [
@@ -67,10 +70,10 @@ describe('Expressions testing', () => { // the tests container
 
         expect(function(){
             operationManager.constructTree({unknown_operation: "fails"})
-        }).to.throw(ExpressionError);
+        }).to.throw(UnknownOperationNameExpressionError);
     });
 
-    const disallowsString = ['div', 'diff', /*'mod',*/ 'mul'];
+    const disallowsString = ['div', 'dif', /*'mod',*/ 'mul'];
     for (let op of disallowsString) {
         it(`Passing string literal to ${op} fail`, () => { // the single test
             let operationManager = new OperationManager();
@@ -78,7 +81,7 @@ describe('Expressions testing', () => { // the tests container
 
             expect(function () {
                 operationManager.constructTree({[op]: ["string"]})
-            }).to.throw(ExpressionError);
+            }).to.throw(NoMatchingOverloadExpressionError);
         });
     }
 });

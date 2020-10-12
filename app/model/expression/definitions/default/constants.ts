@@ -2,10 +2,12 @@ import OperationOverload from "@app/model/expression/OperationOverload";
 import {BooleanType, IntegerType, RealType, StringType} from "@app/model/expression/definitions/default/types";
 import Operation from "@app/model/expression/Operation";
 
-export class ConstantOperation implements Operation {
+export class ConstantOperation extends Operation {
     public transformData(data: any): any {
         return data;
     }
+
+    protected _staticTypeCheck !: 'CONSTANT_OPERATION__TYPE_CHECK';
 }
 
 export class IntConstantOperation extends OperationOverload<ConstantOperation> {

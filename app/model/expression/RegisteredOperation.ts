@@ -2,7 +2,7 @@ import Operation from "@app/model/expression/Operation";
 import IRegisteredOperation from "@app/model/expression/IRegisteredOperation";
 import OperationOverload from "@app/model/expression/OperationOverload";
 import OperationManager from "@app/model/expression/OperationManager";
-import ExpressionError from "@app/model/expression/ExpressionError";
+import {NoMatchingOverloadExpressionError} from "@app/model/expression/ExpressionError";
 
 /**
  * This class represents an Operation which was registered by OperationManager.
@@ -43,6 +43,6 @@ export default class RegisteredOperation<OperationType extends Operation> implem
             }
         }
 
-        throw new ExpressionError(`Operation '${this.name}': No matching overload found. Check types and number of arguments.`);
+        throw new NoMatchingOverloadExpressionError(`Operation '${this.name}': No matching overload found. Check types and number of arguments.`);
     }
 }

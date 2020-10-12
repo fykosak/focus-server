@@ -6,5 +6,5 @@ export default abstract class ExpressionTypeDescriptor {
      * Typescript type representing the data structure having the value
      * Only for Typescript compile purposes
      */
-    public type!: any;
+    public abstract type: any;
 }

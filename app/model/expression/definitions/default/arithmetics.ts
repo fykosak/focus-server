@@ -7,25 +7,25 @@ import {
 } from "@app/model/expression/definitions/default/operation-templates";
 
 // Sum of numbers, strings, arrays, matrices
-export class SumOperation extends AssociativeOperation { private _staticTypeCheck !: 'SUM_OPERATION__TYPE_CHECK' }
+export class SumOperation extends AssociativeOperation { protected _staticTypeCheck !: 'SUM_OPERATION__TYPE_CHECK' }
 
 // Difference of numbers, arrays, matrices
-export class DiffOperation extends NonCommutativeBinaryOperation { private _staticTypeCheck !: 'DIFF_OPERATION__TYPE_CHECK' }
+export class DiffOperation extends NonCommutativeBinaryOperation { protected _staticTypeCheck !: 'DIFF_OPERATION__TYPE_CHECK' }
 
 // Multiplication of numbers, arrays, matrices, scalars and arrays
-export class MulOperation extends AssociativeOperation { private _staticTypeCheck !: 'MUL_OPERATION__TYPE_CHECK' }
+export class MulOperation extends AssociativeOperation { protected _staticTypeCheck !: 'MUL_OPERATION__TYPE_CHECK' }
 
 // Normal number division
-export class DivOperation extends NonCommutativeBinaryOperation { private _staticTypeCheck !: 'DIV_OPERATION__TYPE_CHECK' }
+export class DivOperation extends NonCommutativeBinaryOperation { protected _staticTypeCheck !: 'DIV_OPERATION__TYPE_CHECK' }
 
 // Integer number division
-export class ModOperation extends NonCommutativeStrictlyBinaryOperation { private _staticTypeCheck !: 'MOD_OPERATION__TYPE_CHECK' }
+export class ModOperation extends NonCommutativeStrictlyBinaryOperation { protected _staticTypeCheck !: 'MOD_OPERATION__TYPE_CHECK' }
 
 // Binary AND
-export class AndOperation extends AssociativeOperation { private _staticTypeCheck !: 'AND_OPERATION__TYPE_CHECK' }
+export class AndOperation extends AssociativeOperation { protected _staticTypeCheck !: 'AND_OPERATION__TYPE_CHECK' }
 
 // Binary OR
-export class OrOperation extends AssociativeOperation { private _staticTypeCheck !: 'OR_OPERATION__TYPE_CHECK' }
+export class OrOperation extends AssociativeOperation { protected _staticTypeCheck !: 'OR_OPERATION__TYPE_CHECK' }
 
 export class IntegerSumOperation extends OperationOverload<SumOperation> {
     public isSuitable() {
