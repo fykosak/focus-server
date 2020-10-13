@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import OperationManager from "../../app/model/expression/OperationManager";
 import DefaultDefinitions from "../../app/model/expression/definitions/default/definitions";
 import {
+    InvalidOperationFormatExpressionError,
     NoMatchingOverloadExpressionError,
     UnknownOperationNameExpressionError
 } from "../../app/model/expression/ExpressionError";
@@ -32,40 +33,34 @@ const sumSucceeds = {
     ]
 }
 
-const operations = ['sum', 'dif', 'div', 'mul', 'mod'];
-
-
-
 describe('Expressions testing', () => { // the tests container
     it('Integer operations succeeds', () => { // the single test
-        let operationManager = new OperationManager();
+        const operationManager = new OperationManager();
         DefaultDefinitions(operationManager);
 
-        let expression = operationManager.constructTree(sumSucceeds);
+        const expression = operationManager.constructTree(sumSucceeds);
 
-        let result: number = expression.invoke(null);
+        const result: number = expression.invoke(null);
 
         expect(result).to.equal(1022);
     });
 
-/*    for (let op of operations) {
-        it(`Arithmetics operation ${op} corrupted`, () => { // the single test
-            let operationManager = new OperationManager();
+    for (const op of ['sum', 'dif', 'div', 'mul', 'mod']) {
+        it(`Operation ${op} having object as body fail`, () => {
+            const operationManager = new OperationManager();
             DefaultDefinitions(operationManager);
 
-            let expression = operationManager.constructTree({
-                [op]: {}
-            });
-
             expect(function(){
-                expression.invoke(null);
-            }).to.throw('todo');
+                operationManager.constructTree({
+                    [op]: {}
+                });
+            }).to.throw(InvalidOperationFormatExpressionError);
 
         });
-    }*/
+    }
 
-    it('Unknown operation name fail', () => { // the single test
-        let operationManager = new OperationManager();
+    it('Unknown operation name fail', () => {
+        const operationManager = new OperationManager();
         DefaultDefinitions(operationManager);
 
         expect(function(){
@@ -73,15 +68,45 @@ describe('Expressions testing', () => { // the tests container
         }).to.throw(UnknownOperationNameExpressionError);
     });
 
-    const disallowsString = ['div', 'dif', /*'mod',*/ 'mul'];
-    for (let op of disallowsString) {
-        it(`Passing string literal to ${op} fail`, () => { // the single test
-            let operationManager = new OperationManager();
+    for (const op of ['div', 'dif', 'mod', 'mul']) {
+        it(`Passing string literal to ${op} fail`, () => {
+            const operationManager = new OperationManager();
             DefaultDefinitions(operationManager);
 
             expect(function () {
-                operationManager.constructTree({[op]: ["string"]})
+                operationManager.constructTree({[op]: ["string", "another"]})
             }).to.throw(NoMatchingOverloadExpressionError);
+        });
+    }
+
+    const quadruplets: [number, number, string, boolean][] = [
+        [5, 4  , '>', 5 > 4  ],
+        [5, 5  , '>', 5 > 5  ],
+        [5, 6.2, '>', 5 > 6.2],
+
+        [5, 4  , '>=', 5 >= 4  ],
+        [5, 5  , '>=', 5 >= 5  ],
+        [5, 6.2, '>=', 5 >= 6.2],
+
+        [5, 4  , '<', 5 < 4  ],
+        [5, 5  , '<', 5 < 5  ],
+        [5, 6.2, '<', 5 < 6.2],
+
+        [5, 4  , '<=', 5 <= 4  ],
+        [5, 5  , '<=', 5 <= 5  ],
+        [5, 6.2, '<=', 5 <= 6.2],
+    ];
+
+    for (const q of quadruplets) {
+        it(`Compare operator ${q[0]} ${q[2]} ${q[1]} === ${q[3]} success`, () => {
+            const operationManager = new OperationManager();
+            DefaultDefinitions(operationManager);
+
+            const expression = operationManager.constructTree({[q[2]]: [q[0], q[1]]});
+
+            const result: boolean = expression.invoke(null);
+
+            expect(result).to.equal(q[3]);
         });
     }
 });

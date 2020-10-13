@@ -1,31 +1,25 @@
 import OperationOverload from "@app/model/expression/OperationOverload";
-import {BooleanType, IntegerType, RealType, StringType} from "@app/model/expression/definitions/default/types";
+import {IntegerType, RealType, StringType} from "@app/model/expression/definitions/default/types";
 import {
-    AssociativeOperation,
-    NonCommutativeBinaryOperation,
-    NonCommutativeStrictlyBinaryOperation
+    TupleOperation,
+    UnaryBinaryOperation,
+    BinaryOperation
 } from "@app/model/expression/definitions/default/operation-templates";
 
 // Sum of numbers, strings, arrays, matrices
-export class SumOperation extends AssociativeOperation { protected _staticTypeCheck !: 'SUM_OPERATION__TYPE_CHECK' }
+export class SumOperation extends TupleOperation { protected _staticTypeCheck !: 'SUM_OPERATION__TYPE_CHECK' }
 
 // Difference of numbers, arrays, matrices
-export class DiffOperation extends NonCommutativeBinaryOperation { protected _staticTypeCheck !: 'DIFF_OPERATION__TYPE_CHECK' }
+export class DiffOperation extends UnaryBinaryOperation { protected _staticTypeCheck !: 'DIFF_OPERATION__TYPE_CHECK' }
 
 // Multiplication of numbers, arrays, matrices, scalars and arrays
-export class MulOperation extends AssociativeOperation { protected _staticTypeCheck !: 'MUL_OPERATION__TYPE_CHECK' }
+export class MulOperation extends TupleOperation { protected _staticTypeCheck !: 'MUL_OPERATION__TYPE_CHECK' }
 
 // Normal number division
-export class DivOperation extends NonCommutativeBinaryOperation { protected _staticTypeCheck !: 'DIV_OPERATION__TYPE_CHECK' }
+export class DivOperation extends UnaryBinaryOperation { protected _staticTypeCheck !: 'DIV_OPERATION__TYPE_CHECK' }
 
 // Integer number division
-export class ModOperation extends NonCommutativeStrictlyBinaryOperation { protected _staticTypeCheck !: 'MOD_OPERATION__TYPE_CHECK' }
-
-// Binary AND
-export class AndOperation extends AssociativeOperation { protected _staticTypeCheck !: 'AND_OPERATION__TYPE_CHECK' }
-
-// Binary OR
-export class OrOperation extends AssociativeOperation { protected _staticTypeCheck !: 'OR_OPERATION__TYPE_CHECK' }
+export class ModOperation extends BinaryOperation { protected _staticTypeCheck !: 'MOD_OPERATION__TYPE_CHECK' }
 
 export class IntegerSumOperation extends OperationOverload<SumOperation> {
     public isSuitable() {
@@ -167,42 +161,3 @@ export class IntegerModOperation extends OperationOverload<ModOperation> {
     }
 }
 
-/**
- * Returns true if there is no false. (Empty conjunction is considered to be true)
- */
-export class BooleanAndOperation extends OperationOverload<AndOperation> {
-    public isSuitable() {
-        return this.data.every(item => item.getType() instanceof BooleanType);
-    }
-
-    public getType() {
-        return new BooleanType();
-    }
-
-    public invoke(formData: any) {
-        for (let statement of this.data) {
-            if (!statement.invoke(formData)) return false;
-        }
-        return true;
-    }
-}
-
-/**
- * Returns true if there is at least one true. (Empty disjunction is considered to be false)
- */
-export class BooleanOrOperation extends OperationOverload<OrOperation> {
-    public isSuitable() {
-        return this.data.every(item => item.getType() instanceof BooleanType);
-    }
-
-    public getType() {
-        return new BooleanType();
-    }
-
-    public invoke(formData: any) {
-        for (let statement of this.data) {
-            if (statement.invoke(formData)) return true;
-        }
-        return false;
-    }
-}

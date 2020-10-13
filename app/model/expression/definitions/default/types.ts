@@ -1,11 +1,11 @@
 import ExpressionTypeDescriptor from "@app/model/expression/ExpressionTypeDescriptor";
 
-export class IntegerType extends ExpressionTypeDescriptor {
-    public type!: number;
-}
-
 export class RealType extends ExpressionTypeDescriptor {
     public type!: number
+}
+
+export class IntegerType extends RealType {
+    public type!: number;
 }
 
 export class StringType extends ExpressionTypeDescriptor {

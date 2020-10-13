@@ -1,7 +1,6 @@
 import {
-    AndOperation, BooleanAndOperation, BooleanOrOperation,
     DiffOperation, DivOperation, IntegerDiffOperation, IntegerDivOperation, IntegerModOperation, IntegerMulOperation,
-    IntegerSumOperation, ModOperation, MulOperation, OrOperation, RealDiffOperation, RealDivOperation, RealMulOperation,
+    IntegerSumOperation, ModOperation, MulOperation, RealDiffOperation, RealDivOperation, RealMulOperation,
     RealSumOperation, StringSumOperation, SumOperation
 } from "@app/model/expression/definitions/default/arithmetics";
 import OperationManager from "@app/model/expression/OperationManager";
@@ -12,6 +11,23 @@ import {
     RealConstantOperation, StringConstantOperation
 } from "@app/model/expression/definitions/default/constants";
 import OperationDefinitions from "@app/model/expression/OperationDefinitions";
+import {
+    AndOperation,
+    BooleanAndOperation,
+    BooleanOrOperation, BooleanToTSOperationOverload,
+    OrOperation, ToTSOperation
+} from "@app/model/expression/definitions/default/logic";
+import {
+    EqualOperation,
+    GreaterThanOperation,
+    GreaterThanOrEqualOperation,
+    IntegerEqualOperationOverload,
+    LessThanOperation,
+    LessThanOrEqualOperation,
+    NumberGreaterThanOperationOverload, NumberGreaterThanOrEqualOperationOverload, NumberLessThanOperationOverload,
+    NumberLessThanOrEqualOperationOverload,
+    StringEqualOperationOverload
+} from "@app/model/expression/definitions/default/compare";
 
 /**
  * Default operation definitions for FOCUS platform
@@ -50,6 +66,25 @@ let DefaultDefinitions =  ((operationManager: OperationManager) => {
 
     operationManager.registerOperation('or', OrOperation)
         .registerOverload(BooleanOrOperation);
+
+    operationManager.registerOperation('tots', ToTSOperation)
+        .registerOverload(BooleanToTSOperationOverload);
+
+    operationManager.registerOperation('equals', EqualOperation)
+        .registerOverload(IntegerEqualOperationOverload)
+        .registerOverload(StringEqualOperationOverload);
+
+    operationManager.registerOperation('>', GreaterThanOperation)
+        .registerOverload(NumberGreaterThanOperationOverload);
+
+    operationManager.registerOperation('>=', GreaterThanOrEqualOperation)
+        .registerOverload(NumberGreaterThanOrEqualOperationOverload);
+
+    operationManager.registerOperation('<', LessThanOperation)
+        .registerOverload(NumberLessThanOperationOverload);
+
+    operationManager.registerOperation('<=', LessThanOrEqualOperation)
+        .registerOverload(NumberLessThanOrEqualOperationOverload);
 
 }) as OperationDefinitions;
 
